@@ -1,5 +1,6 @@
 import React from "react";
 import Button from ".//components/Button";
+import Link from "next/link";
 
 export default function LandingPage() {
   return (
@@ -8,9 +9,13 @@ export default function LandingPage() {
       <header className="flex items-center justify-between px-8 py-4 shadow-sm">
         <img src="/cartoon.webp" alt="Solar Logo" className="h-10 w-10" />
         <nav className="flex items-center space-x-6">
-          <Button variant="ghost" className="text-sm">
-            Sign in
-          </Button>
+          <Link href="/signin">
+          
+            <Button variant="ghost" className="text-sm">
+              Sign in
+            </Button>
+          </Link>
+
           <Button className="bg-yellow-400 hover:bg-yellow-500 text-sm">
             Register
           </Button>

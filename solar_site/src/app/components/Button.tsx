@@ -1,15 +1,25 @@
-const Button = (props: {
+interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
-  children: any;
-}) => {
+  children: React.ReactNode;
+  className?: string;
+  variant?: 'ghost' | 'solid'; // You can add more if needed
+}
+
+const Button = ({ type = 'button', onClick, children, className = '', variant = 'solid' }: ButtonProps) => {
+  const baseClasses = "px-4 py-2 font-semibold rounded-md focus:outline-none focus:ring-2";
+  const variantClasses =
+    variant === 'ghost'
+      ? 'bg-transparent text-gray-800 hover:bg-gray-100'
+      : 'bg-blue-500 text-white hover:bg-blue-600';
+
   return (
     <button
-      className="button px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-      type={props.type || 'button'}
-      onClick={props.onClick}
+      type={type}
+      onClick={onClick}
+      className={`${baseClasses} ${variantClasses} ${className}`}
     >
-      {props.children}
+      {children}
     </button>
   );
 };
