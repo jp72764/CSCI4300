@@ -24,7 +24,7 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-pink-100 text-black">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-yellow-200 via-orange-300 to-pink-500 text-black">
       <header className="w-full flex justify-between items-center p-4 border-b border-gray-300">
         <span className="text-lg font-semibold">SOLAR</span>
         <div className="space-x-2">
@@ -47,7 +47,7 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
                   value={formData[field as keyof typeof formData]}
                   onChange={handleChange}
                   type={field === "password" ? "password" : field === "email" ? "email" : "text"}
-                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black"
+                  className="bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black"
                 />
               </div>
             ))}
