@@ -15,10 +15,11 @@ export default function LandingPage() {
               Sign in
             </Button>
           </Link>
-
+          <Link href="/Signup">
           <Button className="bg-yellow-400 hover:bg-yellow-500 text-sm">
             Register
           </Button>
+          </Link>
         </nav>
       </header>
 
