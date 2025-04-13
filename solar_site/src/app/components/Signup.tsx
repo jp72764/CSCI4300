@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Button from "./Button";
+import Link from "next/link"; 
 
 export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }) {
   const [formData, setFormData] = useState({
@@ -24,13 +25,25 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-yellow-100 via-orange-200 to-pink-400 text-black">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-yellow-200 via-orange-200 to-pink-400 text-black">
+      
       <header className="w-full flex justify-between items-center p-4 border-b border-gray-300 bg-white">
-        <span className="text-lg font-semibold">SOLAR</span>
+        {/* SOLAR button on the left */}
+        <Link href="/">
+          <span className="text-lg font-semibold cursor-pointer hover:underline">SOLAR</span>
+        </Link>
+
+        {/* Login button on the right */}
         <div className="space-x-2">
+          <Link href="/addItem">
+            <Button variant="ghost">Upload Resume</Button>
+          </Link>
           <Button variant="ghost">User</Button>
-          <Button variant="ghost">Sign in</Button>
+          <Link href="/signin">
+            <Button variant="ghost">Login</Button>
+          </Link>
         </div>
+
       </header>
 
       <main className="flex flex-col items-center justify-center flex-1 px-4 py-12">
@@ -57,7 +70,10 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
           </form>
           <p className="text-center text-sm mt-4 text-black">
             Already have an account?{" "}
-            <span className="font-semibold underline cursor-pointer">Login</span>
+            <Link href="/signin" className="font-semibold underline hover:text-blue-600">
+              Login
+            </Link>
+
           </p>
         </div>
       </main>
