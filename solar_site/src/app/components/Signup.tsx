@@ -25,7 +25,7 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-yellow-200 via-orange-300 to-pink-500 text-black">
-      <header className="w-full flex justify-between items-center p-4 border-b border-gray-300">
+      <header className="w-full flex justify-between items-center p-4 border-b border-gray-300 bg-white">
         <span className="text-lg font-semibold">SOLAR</span>
         <div className="space-x-2">
           <Button variant="ghost">User</Button>
