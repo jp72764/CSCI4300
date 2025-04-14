@@ -23,12 +23,12 @@ export default function SigninPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-200 to-pink-200 flex flex-col">
       {/* Header */}
-      <div className="flex justify-between items-center px-8 py-4 bg-white shadow">
-        <Link href="/" className="text-xl font-bold">
-          SOLAR
+      <header className="w-full flex items-center px-8 py-4 bg-white shadow">
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/cartoon.webp" alt="Solar Logo" className="h-8 w-8" />
+          <span className="text-xl font-bold text-black hover:underline">SOLAR</span>
         </Link>
-        {/* No Register button here anymore */}
-      </div>
+      </header>
 
       {/* Sign In Form */}
       <div className="flex flex-col items-center justify-center flex-grow">
@@ -63,13 +63,11 @@ export default function SigninPage() {
         <p className="mt-4 text-sm text-center text-gray-700">
           Don’t have an account?{" "}
           <Link
-  href="/Signup"
-  className="text-black font-semibold hover:text-blue-600 hover:underline"
->
-  Register here
-</Link>
-
-
+            href="/Signup"
+            className="text-black font-semibold hover:text-blue-600 hover:underline"
+          >
+            Register here
+          </Link>
         </p>
       </div>
     </div>

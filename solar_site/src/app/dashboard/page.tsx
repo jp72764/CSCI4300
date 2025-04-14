@@ -1,7 +1,7 @@
-// go to http://localhost:3000/dashboard to see this page
 'use client';
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type Item = {
@@ -47,14 +47,25 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-200 to-pink-200 flex flex-col">
       {/* Header */}
-      <header className="flex justify-between items-center px-8 py-4 bg-white shadow">
-        <h1 className="text-xl font-bold">Your Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          className="text-sm bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          Logout
-        </button>
+      <header className="w-full bg-white shadow flex items-center justify-between px-8 py-4 relative">
+        {/* Left: SOLAR logo and link */}
+        <Link href="/" className="flex items-center gap-2 absolute left-8 top-4">
+          <img src="/cartoon.webp" alt="Solar Logo" className="h-8 w-8" />
+          <span className="text-xl font-bold text-black hover:underline">SOLAR</span>
+        </Link>
+
+        {/* Center: Dashboard Title */}
+        <h1 className="text-xl font-bold text-center w-full">Your Dashboard</h1>
+
+        {/* Right: Logout */}
+        <div className="absolute right-8 top-4">
+          <button
+            onClick={handleLogout}
+            className="text-sm bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
       </header>
 
       {/* Content */}
