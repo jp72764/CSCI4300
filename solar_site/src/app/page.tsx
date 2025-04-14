@@ -7,21 +7,24 @@ export default function LandingPage() {
     <div className="min-h-screen w-full flex flex-col text-gray-800">
       {/* Header */}
       <header className="flex items-center justify-between px-8 py-4 shadow-sm">
-        <img src="/cartoon.webp" alt="Solar Logo" className="h-10 w-10" />
-        <nav className="flex items-center space-x-6">
-          <Link href="/signin">
-          
-            <Button variant="ghost" className="text-sm">
-              Sign in
-            </Button>
-          </Link>
-          <Link href="/Signup">
-          <Button className="bg-yellow-400 hover:bg-yellow-500 text-sm">
-            Register
-          </Button>
-          </Link>
-        </nav>
-      </header>
+  <div className="flex items-center gap-2">
+    <img src="/cartoon.webp" alt="Solar Logo" className="h-10 w-10" />
+    <span className="text-xl font-bold text-black">SOLAR</span>
+  </div>
+  <nav className="flex items-center space-x-6">
+    <Link href="/signin">
+      <Button variant="ghost" className="text-sm">
+        Sign in
+      </Button>
+    </Link>
+    <Link href="/Signup">
+      <Button className="bg-yellow-400 hover:bg-yellow-500 text-sm">
+        Register
+      </Button>
+    </Link>
+  </nav>
+</header>
+
 
       {/* Hero Section */}
       <section className="relative flex-1 flex flex-col items-center justify-center text-center px-4 py-20 bg-[#fdfdfd]">
