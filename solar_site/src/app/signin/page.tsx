@@ -28,9 +28,13 @@ export default function SigninPage() {
           SOLAR
         </Link>
         <div className="flex gap-6">
-          <Link href="/Signup" className="hover:underline">
-            Register
-          </Link>
+        <Link
+  href="/Signup"
+  className="px-4 py-2 rounded font-bold text-black hover:bg-gray-200 transition"
+>
+  Register
+</Link>
+
         </div>
       </div>
 
