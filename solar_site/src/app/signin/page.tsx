@@ -14,7 +14,7 @@ export default function SigninPage() {
 
     if (email && password) {
       console.log("User logged in:", { email, password });
-      router.push("/dashboard");
+      router.push("/home");
     } else {
       alert("Please enter valid credentials.");
     }
