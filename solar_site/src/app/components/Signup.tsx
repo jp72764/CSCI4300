@@ -30,19 +30,10 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
       <header className="w-full flex justify-between items-center p-4 border-b border-gray-300 bg-white">
         {/* SOLAR button on the left */}
         <Link href="/">
-          <span className="text-lg font-semibold cursor-pointer hover:underline">SOLAR</span>
+          <span className="text-lg font-semibold cursor-pointer:">SOLAR</span>
         </Link>
 
-        {/* Login button on the right */}
-        <div className="space-x-2">
-          <Link href="/addItem">
-            <Button variant="ghost">Upload Resume</Button>
-          </Link>
-          <Button variant="ghost">User</Button>
-          <Link href="/signin">
-            <Button variant="ghost">Login</Button>
-          </Link>
-        </div>
+        
 
       </header>
 
@@ -64,9 +55,10 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
                 />
               </div>
             ))}
-            <Button type="submit" className="w-full bg-black text-white hover:bg-gray-800">
-              Register
-            </Button>
+            <Button type="submit" className="w-full bg-orange-400 text-black font-semibold hover:bg-yellow-500">
+  Register
+</Button>
+
           </form>
           <p className="text-center text-sm mt-4 text-black">
             Already have an account?{" "}

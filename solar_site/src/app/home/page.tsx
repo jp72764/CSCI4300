@@ -18,6 +18,16 @@ export default function HomePage() {
           <Link href="/dashboard" className="px-4 py-2 rounded font-bold text-black hover:bg-gray-200 transition">
             View Examples
           </Link>
+          <button
+  onClick={() => {
+    console.log("Logging out...");
+    window.location.href = "/signin";
+  }}
+  className="px-4 py-1 rounded bg-red-500 text-white font-bold"
+>
+  Logout
+</button>
+
         </nav>
       </header>
 
@@ -38,6 +48,7 @@ export default function HomePage() {
               View Examples
             </button>
           </Link>
+          
         </div>
       </main>
 

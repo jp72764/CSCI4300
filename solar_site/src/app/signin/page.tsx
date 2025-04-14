@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -27,18 +27,10 @@ export default function SigninPage() {
         <Link href="/" className="text-xl font-bold">
           SOLAR
         </Link>
-        <div className="flex gap-6">
-        <Link
-  href="/Signup"
-  className="px-4 py-2 rounded font-bold text-black hover:bg-gray-200 transition"
->
-  Register
-</Link>
-
-        </div>
+        {/* No Register button here anymore */}
       </div>
 
-      {/* Form Content */}
+      {/* Sign In Form */}
       <div className="flex flex-col items-center justify-center flex-grow">
         <h1 className="text-3xl font-bold mb-6">Sign In</h1>
         <form
@@ -61,11 +53,24 @@ export default function SigninPage() {
           />
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded"
+            className="w-full bg-yellow-400 text-black font-semibold hover:bg-yellow-500 py-2 rounded"
           >
             Sign In
           </button>
         </form>
+
+        {/* Register message */}
+        <p className="mt-4 text-sm text-center text-gray-700">
+          Don’t have an account?{" "}
+          <Link
+  href="/Signup"
+  className="text-black font-semibold hover:text-blue-600 hover:underline"
+>
+  Register here
+</Link>
+
+
+        </p>
       </div>
     </div>
   );

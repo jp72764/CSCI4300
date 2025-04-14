@@ -12,16 +12,24 @@ export default function AddItemPage() {
           <span className="font-bold text-lg cursor-pointer hover:underline">SOLAR</span>
         </Link>
 
-        {/* Right: Account button */}
-        <button className="px-4 py-1 rounded border border-gray-400 hover:bg-gray-100">
-          Account
-        </button>
+        {/* Right: Logout button */}
+        <button
+  onClick={() => {
+    console.log("Logging out...");
+    window.location.href = "/signin";
+  }}
+  className="px-4 py-1 rounded bg-red-500 text-white font-bold"
+>
+  Logout
+</button>
+
       </header>
 
       {/* Main AddItem form */}
       <main className="flex-1 flex items-center justify-center">
         <AddItem />
       </main>
+
       <footer className="bg-white px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm text-black">
         <div className="flex flex-col space-y-2">
           <div className="flex space-x-3">
