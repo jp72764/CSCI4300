@@ -25,7 +25,7 @@ export default function AddItemPage() {
         </button>
       </header>
 
-      {/* Main AddItem form - centered with space from footer */}
+      {/* Main AddItem form */}
       <main className="flex-1 flex items-center justify-center py-10">
         <AddItem />
       </main>
