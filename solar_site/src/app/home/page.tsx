@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Link from "next/link";
 
@@ -9,7 +9,9 @@ export default function HomePage() {
       <header className="w-full flex justify-between items-center px-8 py-4 bg-white shadow">
         <div className="flex items-center gap-2">
           <img src="/cartoon.webp" alt="Solar Logo" className="h-10 w-10" />
-          <span className="text-xl font-bold text-black">SOLAR</span>
+          <Link href="/" className="text-xl font-bold text-black hover:underline">
+            SOLAR
+          </Link>
         </div>
         <nav className="flex gap-6">
           <Link href="/addItem" className="px-4 py-2 rounded font-bold text-black hover:bg-gray-200 transition">
@@ -19,15 +21,14 @@ export default function HomePage() {
             View Examples
           </Link>
           <button
-  onClick={() => {
-    console.log("Logging out...");
-    window.location.href = "/signin";
-  }}
-  className="px-4 py-1 rounded bg-red-500 text-white font-bold"
->
-  Logout
-</button>
-
+            onClick={() => {
+              console.log("Logging out...");
+              window.location.href = "/signin";
+            }}
+            className="px-4 py-1 rounded bg-red-500 text-white font-bold"
+          >
+            Logout
+          </button>
         </nav>
       </header>
 
@@ -48,7 +49,6 @@ export default function HomePage() {
               View Examples
             </button>
           </Link>
-          
         </div>
       </main>
 
