@@ -1,4 +1,5 @@
 'use client';
+
 import AddItem from '@/app/components/AddItem';
 import Link from 'next/link';
 
@@ -14,22 +15,22 @@ export default function AddItemPage() {
 
         {/* Right: Logout button */}
         <button
-  onClick={() => {
-    console.log("Logging out...");
-    window.location.href = "/signin";
-  }}
-  className="px-4 py-1 rounded bg-red-500 text-white font-bold"
->
-  Logout
-</button>
-
+          onClick={() => {
+            console.log("Logging out...");
+            window.location.href = "/signin";
+          }}
+          className="px-4 py-1 rounded bg-red-500 text-white font-bold"
+        >
+          Logout
+        </button>
       </header>
 
-      {/* Main AddItem form */}
-      <main className="flex-1 flex items-center justify-center">
+      {/* Main AddItem form - centered with space from footer */}
+      <main className="flex-1 flex items-center justify-center py-10">
         <AddItem />
       </main>
 
+      {/* Footer */}
       <footer className="bg-white px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm text-black">
         <div className="flex flex-col space-y-2">
           <div className="flex space-x-3">
