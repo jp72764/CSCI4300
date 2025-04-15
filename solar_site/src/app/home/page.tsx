@@ -14,12 +14,12 @@ export default function HomePage() {
           </Link>
         </div>
         <nav className="flex gap-6">
-          <Link href="/addItem" className="px-4 py-2 rounded font-bold text-black hover:bg-gray-200 transition">
+          {/* <Link href="/addItem" className="px-4 py-2 rounded font-bold text-black hover:bg-gray-200 transition">
             Upload Resume
-          </Link>
-          <Link href="/dashboard" className="px-4 py-2 rounded font-bold text-black hover:bg-gray-200 transition">
+          </Link> */}
+          {/* <Link href="/dashboard" className="px-4 py-2 rounded font-bold text-black hover:bg-gray-200 transition">
             View Examples
-          </Link>
+          </Link> */}
           <button
             onClick={() => {
               console.log("Logging out...");
