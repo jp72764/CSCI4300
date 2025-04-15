@@ -46,43 +46,44 @@ export default function LandingPage() {
       {/* Divider */}
       <div className="h-4 bg-gray-300 w-full" />
 
-      <footer className="bg-white px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm">
-        {/* Column 1: Social Icons */}
-        <div className="flex flex-col space-y-2">
-          <div className="flex space-x-3">
-            <img src="/icons/twitter.png" alt="X" className="h-5 w-5" />
-            <img src="/icons/instagram.png" alt="Instagram" className="h-5 w-5" />
-            <img src="/icons/youtube.png" alt="YouTube" className="h-5 w-5" />
-            <img src="/icons/linkedin.png" alt="LinkedIn" className="h-5 w-5" />
-          </div>
-       </div>
+      <footer className="bg-white px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm text-black">
+  {/* Column 1: Social Icons */}
+  <div className="flex flex-col space-y-2">
+    <div className="flex space-x-3">
+      <img src="/icons/twitter.png" alt="X" className="h-5 w-5" />
+      <img src="/icons/instagram.png" alt="Instagram" className="h-5 w-5" />
+      <img src="/icons/youtube.png" alt="YouTube" className="h-5 w-5" />
+      <img src="/icons/linkedin.png" alt="LinkedIn" className="h-5 w-5" />
+    </div>
+  </div>
 
-      {/* Column 2: Services */}
-      <div className="flex flex-col space-y-2">
-        <h4 className="font-semibold mb-1">Services</h4>
-        <span>AI Resume Check</span>
-      </div>
+  {/* Column 2: Services */}
+  <div className="flex flex-col space-y-2">
+    <h4 className="font-semibold mb-1">Services</h4>
+    <span>AI Resume Check</span>
+  </div>
 
-      {/* Column 3: Explore */}
-      <div className="flex flex-col space-y-2">
-        <h4 className="font-semibold mb-1">Explore</h4>
-        <span>Design</span>
-        <span>Prototyping</span>
-        <span>Development features</span>
-        <span>Design systems</span>
-        <span>Collaboration features</span>
-        <span>Design process</span>
-      </div>
+  {/* Column 3: Explore */}
+  <div className="flex flex-col space-y-2">
+    <h4 className="font-semibold mb-1">Explore</h4>
+    <span>Design</span>
+    <span>Prototyping</span>
+    <span>Development features</span>
+    <span>Design systems</span>
+    <span>Collaboration features</span>
+    <span>Design process</span>
+  </div>
 
-      {/* Column 4: Resources */}
-      <div className="flex flex-col space-y-2">
-        <h4 className="font-semibold mb-1">Resources</h4>
-        <span>Blog</span>
-        <span>Sample Resumes</span>
-        <span>Support</span>
-        <span>Developers</span>
-      </div>
-    </footer>
+  {/* Column 4: Resources */}
+  <div className="flex flex-col space-y-2">
+    <h4 className="font-semibold mb-1">Resources</h4>
+    <span>Blog</span>
+    <span>Sample Resumes</span>
+    <span>Support</span>
+    <span>Developers</span>
+  </div>
+</footer>
+
     </div>
   );
 }
