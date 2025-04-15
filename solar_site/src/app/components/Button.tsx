@@ -3,7 +3,7 @@ interface ButtonProps {
   onClick?: () => void;
   children: React.ReactNode;
   className?: string;
-  variant?: 'ghost' | 'solid'; // You can add more if needed
+  variant?: 'ghost' | 'solid'; 
 }
 
 const Button = ({ type = 'button', onClick, children, className = '', variant = 'solid' }: ButtonProps) => {

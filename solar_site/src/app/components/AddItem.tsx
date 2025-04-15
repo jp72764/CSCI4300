@@ -15,7 +15,7 @@ export default function AddItem() {
     { title: string; description: string }[]
   >([]);
 
-  // Resume logic
+
   const handleResumeFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === "application/pdf") {
@@ -33,7 +33,7 @@ export default function AddItem() {
     setResumeFile(null);
   };
 
-  // General item logic
+ 
   const handleGeneralChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -44,13 +44,12 @@ export default function AddItem() {
   const handleGeneralSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("General Item Submitted:", generalItem);
-    setItems((prev) => [...prev, generalItem]); // ⬅️ Adds to preview list
+    setItems((prev) => [...prev, generalItem]);
     setGeneralItem({ title: "", description: "" });
   };
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow-md space-y-10">
-      {/* Upload Resume Section */}
       <div>
         <h2 className="text-2xl font-bold mb-4">Upload Resume</h2>
         <form onSubmit={handleResumeSubmit} className="space-y-4">
@@ -86,7 +85,6 @@ export default function AddItem() {
         </form>
       </div>
 
-      {/* General Item Section */}
       <div>
         <h2 className="text-2xl font-bold mb-4">Add Items</h2>
         <form onSubmit={handleGeneralSubmit} className="space-y-4">
@@ -114,7 +112,7 @@ export default function AddItem() {
         </form>
       </div>
 
-      {/* 🔍 Preview Section */}
+     
       {items.length > 0 && (
         <div>
           <h2 className="text-xl font-bold mb-2">Items List</h2>

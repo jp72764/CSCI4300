@@ -6,14 +6,11 @@ import Link from 'next/link';
 export default function AddItemPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-yellow-200 via-orange-200 to-pink-400 text-black">
-      {/* Top white header bar */}
       <header className="w-full flex justify-between items-center p-4 border-b border-gray-300 bg-white shadow-sm">
-        {/* Left: SOLAR button to go home */}
         <Link href="/">
           <span className="font-bold text-lg cursor-pointer hover:underline">SOLAR</span>
         </Link>
 
-        {/* Right: Logout button */}
         <button
           onClick={() => {
             console.log("Logging out...");
@@ -25,12 +22,11 @@ export default function AddItemPage() {
         </button>
       </header>
 
-      {/* Main AddItem form */}
+
       <main className="flex-1 flex items-center justify-center py-10">
         <AddItem />
       </main>
 
-      {/* Footer */}
       <footer className="bg-white px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm text-black">
         <div className="flex flex-col space-y-2">
           <div className="flex space-x-3">

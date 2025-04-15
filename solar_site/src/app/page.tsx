@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function LandingPage() {
   return (
     <div className="min-h-screen w-full flex flex-col text-gray-800">
-      {/* Header */}
+
       <header className="flex items-center justify-between px-8 py-4 shadow-sm">
   <div className="flex items-center gap-2">
     <img src="/cartoon.webp" alt="Solar Logo" className="h-10 w-10" />
@@ -26,7 +26,7 @@ export default function LandingPage() {
 </header>
 
 
-      {/* Hero Section */}
+    
       <section className="relative flex-1 flex flex-col items-center justify-center text-center px-4 py-20 bg-[#fdfdfd]">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
@@ -43,11 +43,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Divider */}
+ 
       <div className="h-4 bg-gray-300 w-full" />
 
       <footer className="bg-white px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm">
-        {/* Column 1: Social Icons */}
+
         <div className="flex flex-col space-y-2">
           <div className="flex space-x-3">
             <img src="/icons/twitter.png" alt="X" className="h-5 w-5" />
@@ -57,13 +57,13 @@ export default function LandingPage() {
           </div>
        </div>
 
-      {/* Column 2: Services */}
+
       <div className="flex flex-col space-y-2">
         <h4 className="font-semibold mb-1">Services</h4>
         <span>AI Resume Check</span>
       </div>
 
-      {/* Column 3: Explore */}
+
       <div className="flex flex-col space-y-2">
         <h4 className="font-semibold mb-1">Explore</h4>
         <span>Design</span>
@@ -74,7 +74,7 @@ export default function LandingPage() {
         <span>Design process</span>
       </div>
 
-      {/* Column 4: Resources */}
+
       <div className="flex flex-col space-y-2">
         <h4 className="font-semibold mb-1">Resources</h4>
         <span>Blog</span>
