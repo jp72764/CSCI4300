@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import AddItem from '@/app/components/AddItem';
 
 type Item = {
   id: number;
@@ -96,33 +97,7 @@ export default function Dashboard() {
         </div>
 
         {/* Add Item Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4 p-6 bg-white rounded shadow w-full max-w-md"
-        >
-          <h2 className="text-xl font-semibold text-center">Add New Resume</h2>
-          <input
-            type="text"
-            placeholder="Title"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            className="border p-2 rounded bg-white"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Image URL"
-            value={newImage}
-            onChange={(e) => setNewImage(e.target.value)}
-            className="border p-2 rounded bg-white"
-          />
-          <button
-            type="submit"
-            className="bg-yellow-400 text-black font-semibold hover:bg-yellow-500 py-2 rounded"
-          >
-            Add Item
-          </button>
-        </form>
+          <AddItem />
       </div>
     </div>
   );
