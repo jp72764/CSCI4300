@@ -44,7 +44,7 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
             {["name", "username", "email", "password"].map((field) => (
               <div key={field} className="flex flex-col">
                 <label htmlFor={field} className="mb-1 font-medium text-black">
-                  {field === "username" ? "Last Name" : field.charAt(0).toUpperCase() + field.slice(1)}
+                  {field === "username" ? "Username" : field.charAt(0).toUpperCase() + field.slice(1)}
                 </label>
                 <input
                   name={field}
@@ -70,7 +70,7 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
         </div>
       </main>
 
-      {/* <footer className="bg-white px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm text-black">
+      {<footer className="bg-white px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm text-black">
         <div className="flex flex-col space-y-2">
           <div className="flex space-x-3">
             <img src="/icons/twitter.png" alt="X" className="h-5 w-5" />
@@ -99,7 +99,7 @@ export default function Signup({ onAddUser }: { onAddUser: (user: any) => void }
           <span>Support</span>
           <span>Developers</span>
         </div>
-      </footer> */}
+      </footer>}
     </div>
   );
 }
