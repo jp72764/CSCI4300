@@ -41,8 +41,19 @@ export default function AddItemPage() {
           <span>AI Resume Check</span>
         </div>
         <div className="flex flex-col space-y-2">
+          <h4 className="font-semibold mb-1">Explore</h4>
+          <span>Design</span>
+          <span>Prototyping</span>
+          <span>Development features</span>
+          <span>Design systems</span>
+          <span>Collaboration features</span>
+          <span>Design process</span>
+        </div>
+        <div className="flex flex-col space-y-2">
           <h4 className="font-semibold mb-1">Resources</h4>
+          <span>Blog</span>
           <span>Sample Resumes</span>
+          <span>Support</span>
           <span>Developers</span>
         </div>
       </footer>

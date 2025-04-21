@@ -8,7 +8,7 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
     const isLoggedIn = !!req.auth?.user;
     console.log('app', req.nextUrl.pathname);
-    const authPaths = ['/login', '/signup'];
+    const authPaths = ['/dashboard', '/signup'];
     const isAuthPath = authPaths.some((path) => req.nextUrl.pathname.startsWith(path));
 
     if (isAuthPath && isLoggedIn) {
@@ -16,11 +16,11 @@ export default auth((req) => {
     }
 
     if (!isAuthPath && !isLoggedIn) {
-        return NextResponse.redirect(new URL('/login', req.url));
+        return NextResponse.redirect(new URL('/', req.url));
     }
     return NextResponse.next();
 });
 
 export const config = {
-    matcher: ['/dashboard/:path*', '/login', '/signup'],
+    matcher: ['/dashboard', '/signup'],
 };
