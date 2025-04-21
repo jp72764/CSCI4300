@@ -1,10 +1,6 @@
-'use client';
-import Signup from "@/app/components/Signup";
+// src/app/Signup/page.tsx
+import Signup from '../components/Signup'; // Adjust the path as needed
 
 export default function SignupPage() {
-  const handleAddUser = (user: any) => {
-    console.log("User registered:", user);
-  };
-
-  return <Signup onAddUser={handleAddUser} />;
+  return <Signup />;
 }
