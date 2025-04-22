@@ -1,72 +1,87 @@
 "use client";
-
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 
-export default function SigninPage() {
+export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
-    if (email && password) {
-      console.log("User logged in:", { email, password });
-      router.push("/dashboard");
-    } else {
-      alert("Please enter valid credentials.");
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (result?.error) {
+        setError("Invalid email or password");
+        return;
+      }
+
+      window.location.href = "/dashboard";
+    } catch (error) {
+      setError("An unexpected error occurred. Please try again.");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-200 to-pink-200 flex flex-col">
-      <header className="w-full flex items-center px-8 py-4 bg-white shadow">
-        <Link href="/" className="flex items-center gap-2">
-          <img src="/cartoon.webp" alt="Solar Logo" className="h-8 w-8" />
-          <span className="text-xl font-bold text-black hover:underline">SOLAR</span>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-yellow-200 via-orange-200 to-pink-400 text-black">
+      <header className="w-full flex justify-between items-center p-4 border-b border-gray-300 bg-white">
+        <Link href="/">
+          <span className="text-lg font-semibold cursor-pointer">SOLAR</span>
         </Link>
       </header>
 
-      <div className="flex flex-col items-center justify-center flex-grow">
-        <h1 className="text-3xl font-bold mb-6">Sign In</h1>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4 p-4 w-full max-w-md"
-        >
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border p-2 rounded bg-white"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 rounded bg-white"
-          />
-          <button
-            type="submit"
-            className="w-full bg-yellow-400 text-black font-semibold hover:bg-yellow-500 py-2 rounded"
-          >
-            Sign In
-          </button>
-        </form>
+      <main className="flex flex-col items-center justify-center flex-1 px-4 py-12">
+        <div className="w-full max-w-md p-8 bg-white rounded-lg shadow">
+          <h1 className="text-4xl font-bold mb-8 text-center">Sign In</h1>
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex flex-col">
+              <label className="mb-1 font-medium">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                required
+              />
+            </div>
 
-        <p className="mt-4 text-sm text-center text-gray-700">
-          Don’t have an account?{" "}
-          <Link
-            href="/Signup"
-            className="text-black font-semibold hover:text-blue-600 hover:underline"
-          >
-            Register here
-          </Link>
-        </p>
-      </div>
+            <div className="flex flex-col">
+              <label className="mb-1 font-medium">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-orange-400 text-black font-semibold hover:bg-yellow-500 py-2 rounded"
+            >
+              Login
+            </button>
+          </form>
+
+          <p className="text-center text-sm mt-4">
+            Don't have an account?{" "}
+            <Link href="/signup" className="font-semibold underline hover:text-blue-600">
+              Sign Up
+            </Link>
+          </p>
+        </div>
+      </main>
     </div>
   );
 }

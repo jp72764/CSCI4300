@@ -1,43 +1,39 @@
 import { NextResponse } from "next/server";
-import User from "@/models/User";
 import bcrypt from "bcryptjs";
-import connectMongoDB from "../../../../config//mongodb";
+import User from "@/models/User";
+import connectMongoDB from "../../../../config/mongodb";
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { email, password } = await request.json();
+    const { username, email, password } = await req.json();
 
-    // Validate input
-    if (!email || !password) {
+    if (!email || !password || !username) {
       return NextResponse.json(
-        { message: "Email and password are required" },
+        { message: "All fields are required" },
         { status: 400 }
       );
     }
 
     await connectMongoDB();
 
-    // Check for existing user
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return NextResponse.json(
         { message: "User already exists" },
-        { status: 400 }
+        { status: 409 }
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
-    const newUser = await User.create({
-      email,
+    await User.create({
+      username,
+      email: email.toLowerCase(),
       password: hashedPassword,
-      username: email.split("@")[0], // Default username
     });
 
     return NextResponse.json(
-      { message: "User created successfully", user: newUser },
+      { message: "User registered successfully" },
       { status: 201 }
     );
   } catch (error) {

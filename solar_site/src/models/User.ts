@@ -3,22 +3,48 @@ import { Schema, model, models, Document } from "mongoose";
 export interface IUser extends Document {
   email: string;
   password: string;
-  username?: string;
+  username: string;
   lastLogin?: Date;
-  // Add other fields as needed (e.g., role, imageURL)
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const UserSchema = new Schema<IUser>(
   {
-    email: { type: String, unique: true, required: true },
-    password: { type: String, required: true },
-    username: { type: String, unique: true, required: true },
-    lastLogin: { type: Date },
-    // Add other fields here as needed
+    email: { 
+      type: String, 
+      unique: true, 
+      required: [true, 'Email is required'],
+      lowercase: true,
+      trim: true
+    },
+    password: { 
+      type: String, 
+      required: [true, 'Password is required'],
+      minlength: [6, 'Password must be at least 6 characters']
+    },
+    username: { 
+      type: String, 
+      unique: true, 
+      required: [true, 'Username is required'],
+      trim: true
+    },
+    lastLogin: { type: Date }
   },
-  { timestamps: true }
+  { 
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+        delete ret.__v;
+        ret.id = ret._id;
+        delete ret._id;
+      }
+    }
+  }
 );
 
-const User = models.User<IUser> || model<IUser>("User", UserSchema, 'users');
+// Safe initialization check
+const User = models?.User || model<IUser>("User", UserSchema, 'users');
 
 export default User;
