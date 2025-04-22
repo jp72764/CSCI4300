@@ -1,9 +1,11 @@
 'use client';
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import AddItem from '@/app/components/AddItem';
+import { useSession, signOut } from "next-auth/react";
+import AddItem from "@/app/components/AddItem";
 
 type Item = {
   id: number;
@@ -12,6 +14,9 @@ type Item = {
 };
 
 export default function Dashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [items, setItems] = useState<Item[]>([
     { id: 1, title: "Sample Resume 1", image: "/resumes/sample1.png" },
     { id: 2, title: "Sample Resume 2", image: "/resumes/sample2.png" },
@@ -20,7 +25,12 @@ export default function Dashboard() {
 
   const [newTitle, setNewTitle] = useState("");
   const [newImage, setNewImage] = useState("");
-  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/signin");
+    }
+  }, [status, router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,30 +42,32 @@ export default function Dashboard() {
     setItems([...items, newItem]);
     setNewTitle("");
     setNewImage("");
-    console.log("New item added:", newItem);
   };
 
   const handleDelete = (id: number) => {
     const updatedItems = items.filter((item) => item.id !== id);
     setItems(updatedItems);
-    console.log("Item deleted:", id);
   };
 
   const handleLogout = () => {
-    router.push("/");
+    signOut({ callbackUrl: "/signin" });
   };
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-200 to-pink-200 flex flex-col">
       {/* Header */}
       <header className="w-full bg-white shadow flex items-center justify-between px-8 py-4 relative">
-        {/* Left: SOLAR logo and link */}
+        {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2 absolute left-8 top-4">
           <img src="/cartoon.webp" alt="Solar Logo" className="h-8 w-8" />
           <span className="text-xl font-bold text-black hover:underline">SOLAR</span>
         </Link>
 
-        {/* Center: Dashboard Title */}
+        {/* Center: Title */}
         <h1 className="text-xl font-bold text-center w-full">Your Dashboard</h1>
 
         {/* Right: Logout */}
@@ -71,7 +83,6 @@ export default function Dashboard() {
 
       {/* Content */}
       <div className="flex flex-col items-center justify-center flex-grow px-4 py-8">
-        {/* Item Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8 w-full max-w-6xl">
           {items.map((item) => (
             <div
@@ -97,7 +108,7 @@ export default function Dashboard() {
         </div>
 
         {/* Add Item Form */}
-          <AddItem />
+        <AddItem />
       </div>
     </div>
   );
