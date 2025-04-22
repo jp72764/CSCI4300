@@ -1,10 +1,32 @@
+'use client';
+
 import React from "react";
 import Button from ".//components/Button";
+import Image from "next/image";
 import Link from "next/link";
 import connectMongoDB from "../../config/mongodb";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+type Item = {
+  id: number;
+  title: string;
+  image: string;
+};
 
 export default function LandingPage() {
   connectMongoDB();
+
+  const [items, setItems] = useState<Item[]>([
+    { id: 1, title: "Sample Resume 1", image: "/resumes/sample1.png" },
+    { id: 2, title: "Sample Resume 2", image: "/resumes/sample2.png" },
+    { id: 3, title: "Sample Resume 3", image: "/resumes/sample3.png" },
+  ]);
+
+  const [newTitle, setNewTitle] = useState("");
+  const [newImage, setNewImage] = useState("");
+  const router = useRouter();
+
   return (
     <div className="min-h-screen w-full flex flex-col text-gray-800">
 
@@ -46,6 +68,30 @@ export default function LandingPage() {
       </section>
 
  
+      <div className="h-4 bg-gray-300 w-full" />
+
+      <div className="h-8 bg-white300 w-full" />
+
+      <div className="flex flex-col items-center justify-center flex-grow px-4 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8 w-full max-w-6xl">
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white border shadow rounded p-4 flex flex-col items-center"
+            >
+              <Image
+                src={item.image}
+                alt={item.title}
+                width={150}
+                height={150}
+                className="rounded"
+              />
+              <p className="mt-2 font-semibold text-center">{item.title}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="h-4 bg-gray-300 w-full" />
 
       <footer className="bg-white px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm">
