@@ -1,7 +1,7 @@
-Solar: AI Resume Checker:
+SOLAR
 
 Solar is an AI-powered resume optimization tool designed to help job seekers improve their chances of passing Applicant Tracking Systems (ATS) and catching recruiters’ attention. By analyzing resumes against target job descriptions, Solar identifies keyword gaps, formatting issues, and skill mismatches that often cause qualified candidates to be overlooked. This automated feedback enables users to tailor their resumes effectively and increase interview callbacks.
 
 The platform leverages advanced AI models, including GPT-based natural language processing, to provide actionable suggestions for improving resume content and structure. Solar not only highlights missing keywords but also recommends stronger, action-oriented language and ATS-friendly formatting. Users receive a clear, easy-to-understand score and detailed insights for each section of their resume, empowering them to make data-driven improvements.
 
-Solar prioritizes user privacy and security by ensuring sensitive resume data is processed securely and deleted promptly after analysis. Its intuitive interface allows users to upload resumes and job descriptions effortlessly, receiving comprehensive reports in real time. By simplifying and enhancing the resume-building process, Solar aims to democratize access to professional career tools and help users stand out in competitive job markets.
+Solar prioritizes user privacy and security by ensuring sensitive resume data is processed securely and deleted promptly after analysis. Its interface allows users to upload resumes and job descriptions effortlessly, receiving comprehensive reports in real time. By simplifying and enhancing the resume-building process, Solar aims to democratize access to professional career tools and help users stand out in competitive job markets.
