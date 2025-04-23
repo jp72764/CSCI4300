@@ -25,7 +25,7 @@ export default function AddItem({
 
   const handleResumeFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    e.target.value = ""; // ✅ Reset file input so selecting the same file triggers change again
+    e.target.value = ""; 
   
     if (!file) return;
   
