@@ -1,196 +1,97 @@
 "use client";
 
 import { useState } from "react";
+
 let pdfjsLib: any = null;
 
 if (typeof window !== "undefined") {
   (async () => {
+        // @ts-ignore
+
     const pdfjs = await import("pdfjs-dist/build/pdf");
     pdfjs.GlobalWorkerOptions.workerSrc = "/pdf-worker.js";
     pdfjsLib = pdfjs;
   })();
 }
 
-export default function AddItem() {
-  const [title, setTitle] = useState("");
+export default function AddItem({ onUpload }: { onUpload: (title: string, file: File, role: string) => void }) {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [extractedText, setExtractedText] = useState("");
-  const [feedback, setFeedback] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [role, setRole] = useState("general");
 
-  {/*}
-  const [generalItem, setGeneralItem] = useState({ title: "", description: "" });
-  const [items, setItems] = useState<{ title: string; description: string }[]>([]);
-  */}
-
-  const handleResumeFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleResumeFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type === "application/pdf") {
-      setResumeFile(file);
-      const text = await extractTextFromPDF(file);
-      setExtractedText(text);
-      console.log("Extracted text:", text);
-      if (!text || text.trim() === "") {
-        console.warn("⚠️ PDF text was empty or only whitespace.");
-      } else {
-        console.log("✅ PDF text extracted:", text.slice(0, 300));
-      }
-      
+    if (!file) return;
 
-    } else {
+    const isPDF = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+    if (!isPDF) {
       alert("Please upload a valid PDF file.");
-    }
-  };
-
-  const extractTextFromPDF = async (file: File): Promise<string> => {
-    const arrayBuffer = await file.arrayBuffer();
-  
-    // Wait for pdfjsLib to be ready
-    while (!pdfjsLib) {
-      await new Promise((res) => setTimeout(res, 50));
-    }
-  
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    let fullText = "";
-  
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const strings = content.items.map((item: any) => item.str);
-      fullText += strings.join(" ") + "\n";
-    }
-  
-    return fullText;
-  };
-  
-
-  const getFeedback = async (resumeText: string) => {
-    const res = await fetch("/api/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ resumeText }),
-    });
-
-    const data = await res.json();
-    return data.result;
-  };
-
-  const handleResumeSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!extractedText) {
-      alert("No resume text extracted.");
       return;
     }
-    setLoading(true);
-    const response = await getFeedback(extractedText);
-    setFeedback(response);
-    setLoading(false);
+
+    setResumeFile(file);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resumeFile || !title) return;
+    onUpload(title, resumeFile, role);
     setTitle("");
     setResumeFile(null);
+    setRole("general");
   };
-
-  {/*}
-  const handleGeneralChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setGeneralItem((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleGeneralSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setItems((prev) => [...prev, generalItem]);
-    setGeneralItem({ title: "", description: "" });
-  };
-  */}
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow-md space-y-10">
-      {/* Resume Upload */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Upload Resume (PDF)</h2>
-        <form onSubmit={handleResumeSubmit} className="space-y-4">
-          <input
-            name="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Title"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-          <label
-            htmlFor="fileInput"
-            className="block bg-gray-200 hover:bg-gray-300 text-black font-medium px-4 py-2 rounded cursor-pointer w-fit"
-          >
-            {resumeFile ? "Change File" : "Choose PDF File"}
-          </label>
-          <input
-            id="fileInput"
-            type="file"
-            accept="application/pdf"
-            onChange={handleResumeFileChange}
-            className="hidden"
-          />
-          {resumeFile && (
-            <p className="text-sm text-gray-600">Selected: {resumeFile.name}</p>
-          )}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            {loading ? "Analyzing..." : "Get Feedback"}
-          </button>
-        </form>
+    <form
+      onSubmit={handleSubmit}
+      className="w-full max-w-md bg-white rounded shadow p-6 flex flex-col items-center"
+    >
+      <h2 className="text-2xl font-bold mb-4">Upload My Resume </h2>
 
-        {feedback && (
-          <div className="mt-4 p-4 border border-blue-400 bg-blue-50 rounded text-sm whitespace-pre-wrap">
-            <h3 className="font-semibold mb-2">AI Feedback:</h3>
-            {feedback}
-          </div>
-        )}
-      </div>
+      <input
+        type="text"
+        placeholder="Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        className="w-full mb-4 px-4 py-2 border border-gray-300 rounded"
+      />
 
-      {/* General Items Section */} {/*
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Add Items</h2>
-        <form onSubmit={handleGeneralSubmit} className="space-y-4">
-          <input
-            name="title"
-            value={generalItem.title}
-            onChange={handleGeneralChange}
-            placeholder="Item Title"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-          <textarea
-            name="description"
-            value={generalItem.description}
-            onChange={handleGeneralChange}
-            placeholder="Item Description"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            rows={3}
-          />
-          <button
-            type="submit"
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-          >
-            Add Item
-          </button>
-        </form>
-      </div> */}
+      <label
+        htmlFor="file-upload"
+        className="w-full mb-4 border border-dashed border-gray-300 rounded p-2 text-center cursor-pointer text-gray-500 hover:bg-gray-50"
+      >
+        {resumeFile ? resumeFile.name : "Choose PDF File"}
+      </label>
+      <input
+        id="file-upload"
+        type="file"
+        accept="application/pdf"
+        onChange={handleResumeFileChange}
+        className="hidden"
+      />
 
-      {/* Item List */}
-      {/*}
-      {items.length > 0 && (
-        <div>
-          <h2 className="text-xl font-bold mb-2">Items List</h2>
-          <ul className="space-y-3">
-            {items.map((item, index) => (
-              <li key={index} className="border border-gray-200 rounded p-3 bg-gray-50">
-                <h3 className="font-semibold">{item.title}</h3>
-                <p className="text-sm text-gray-600">{item.description}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-        */}
-    </div>
+      <label className="text-sm mb-1 text-left w-full">Select Resume Role Type:</label>
+      <select
+        value={role}
+        onChange={(e) => setRole(e.target.value)}
+        className="w-full mb-4 p-2 border border-gray-300 rounded"
+      >
+        <option value="general">General</option>
+        <option value="frontend developer">Frontend Developer</option>
+        <option value="data scientist">Data Scientist</option>
+        <option value="software engineer">Software Engineer</option>
+        <option value="hardware engineer">Hardware Engineer</option>
+      </select>
+
+      <button
+        type="submit"
+        disabled={!resumeFile || !title}
+        className={`w-full text-white py-2 px-4 rounded ${
+          resumeFile && title ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-300 cursor-not-allowed"
+        }`}
+      >
+        Upload
+      </button>
+    </form>
   );
 }

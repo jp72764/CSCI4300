@@ -1,30 +1,23 @@
 'use client';
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import AddItem from "@/app/components/AddItem";
 
-type Item = {
+type Resume = {
   id: number;
   title: string;
-  image: string;
+  fileName: string;
+  role: string;
+  feedback?: string;
 };
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const [items, setItems] = useState<Item[]>([
-    { id: 1, title: "Sample Resume 1", image: "/resumes/sample1.png" },
-    { id: 2, title: "Sample Resume 2", image: "/resumes/sample2.png" },
-    { id: 3, title: "Sample Resume 3", image: "/resumes/sample3.png" },
-  ]);
-
-  const [newTitle, setNewTitle] = useState("");
-  const [newImage, setNewImage] = useState("");
+  const [uploadedResumes, setUploadedResumes] = useState<Resume[]>([]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -32,83 +25,99 @@ export default function Dashboard() {
     }
   }, [status, router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newItem = {
-      id: Date.now(),
-      title: newTitle,
-      image: newImage || "/resumes/sample1.png",
+  const handleResumeUpload = (title: string, file: File, role: string) => {
+    const id = Date.now();
+    const newResume: Resume = {
+      id,
+      title,
+      fileName: file.name,
+      role,
     };
-    setItems([...items, newItem]);
-    setNewTitle("");
-    setNewImage("");
+    setUploadedResumes((prev) => [...prev, newResume]);
   };
 
-  const handleDelete = (id: number) => {
-    const updatedItems = items.filter((item) => item.id !== id);
-    setItems(updatedItems);
+  const handleDeleteResume = (id: number) => {
+    setUploadedResumes((prev) => prev.filter((r) => r.id !== id));
+  };
+
+  const handleGetFeedback = async (resume: Resume) => {
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: resume.title,
+          role: resume.role,
+        }),
+      });
+      const data = await res.json();
+      setUploadedResumes((prev) =>
+        prev.map((r) => (r.id === resume.id ? { ...r, feedback: data.feedback } : r))
+      );
+    } catch (err) {
+      alert("❌ Failed to get feedback.");
+    }
   };
 
   const handleLogout = () => {
     signOut({ callbackUrl: "/signin" });
   };
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
+  if (status === "loading") return <div>Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-200 to-pink-200 flex flex-col">
-      {/* Header */}
-      <header className="w-full bg-white shadow flex items-center justify-between px-8 py-4 relative">
-        {/* Left: Logo */}
-        <Link href="/" className="flex items-center gap-2 absolute left-8 top-4">
-          <img src="/cartoon.webp" alt="Solar Logo" className="h-8 w-8" />
-          <span className="text-xl font-bold text-black hover:underline">SOLAR</span>
-        </Link>
-
-        {/* Center: Title */}
-        <h1 className="text-xl font-bold text-center w-full">Your Dashboard</h1>
-
-        {/* Right: Logout */}
-        <div className="absolute right-8 top-4">
-          <button
-            onClick={handleLogout}
-            className="text-sm bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Logout
-          </button>
+    <div className="min-h-screen bg-gradient-to-b from-yellow-200 to-pink-200">
+      <header className="w-full bg-white shadow flex items-center justify-between px-8 py-4">
+        <div className="flex items-center gap-2">
+          <img src="/cartoon.webp" alt="Logo" className="h-8 w-8" />
+          <span className="text-xl font-bold text-black">SOLAR</span>
         </div>
+        <h1 className="text-xl font-bold">Your Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="text-sm bg-yellow-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Logout
+        </button>
       </header>
 
-      {/* Content */}
-      <div className="flex flex-col items-center justify-center flex-grow px-4 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8 w-full max-w-6xl">
-          {items.map((item) => (
+      <div className="flex flex-col items-center justify-center py-10 px-4">
+        <AddItem onUpload={handleResumeUpload} />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 max-w-6xl w-full">
+          {uploadedResumes.map((resume) => (
             <div
-              key={item.id}
-              className="bg-white border shadow rounded p-4 flex flex-col items-center"
+              key={resume.id}
+              className="bg-white rounded shadow p-4 flex flex-col justify-between"
             >
-              <Image
-                src={item.image}
-                alt={item.title}
-                width={150}
-                height={150}
-                className="rounded"
-              />
-              <p className="mt-2 font-semibold text-center">{item.title}</p>
-              <button
-                onClick={() => handleDelete(item.id)}
-                className="mt-2 text-sm text-white bg-red-600 px-3 py-1 rounded hover:bg-red-700"
-              >
-                Delete
-              </button>
+              <h3 className="font-semibold text-lg text-center">{resume.title}</h3>
+              <p className="text-sm text-center text-gray-500 mb-2">{resume.fileName}</p>
+              <p className="text-xs text-center italic text-gray-400">Role: {resume.role}</p>
+
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={() => handleGetFeedback(resume)}
+                  className="text-sm bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                >
+                  Get Feedback
+                </button>
+                <button
+                  onClick={() => handleDeleteResume(resume.id)}
+                  className="text-sm bg-yellow-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </div>
+
+              {resume.feedback && (
+                <div className="mt-4 text-sm bg-gray-100 p-3 rounded border">
+                  <strong>Feedback:</strong>
+                  <p className="mt-1 whitespace-pre-line">{resume.feedback}</p>
+                </div>
+              )}
             </div>
           ))}
         </div>
-
-        {/* Add Item Form */}
-        <AddItem />
       </div>
     </div>
   );
