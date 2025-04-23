@@ -21,6 +21,7 @@ export default function Dashboard() {
   const router = useRouter();
 
   const [uploadedResumes, setUploadedResumes] = useState<Resume[]>([]);
+  const [editingTitle, setEditingTitle] = useState("");
   const [loadingId, setLoadingId] = useState<number | null>(null);
 
   const userName = session?.user?.name || session?.user?.email?.split("@")[0];
@@ -67,15 +68,18 @@ export default function Dashboard() {
     setLoadingId(null);
   };
 
-  const toggleEditing = (id: number) => {
-    setUploadedResumes(prev =>
-      prev.map(r => r.id === id ? { ...r, editing: !r.editing } : r)
+  const toggleEditing = (id: number, currentTitle: string) => {
+    setEditingTitle(currentTitle);
+    setUploadedResumes((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, editing: true } : r))
     );
   };
 
-  const updateResumeTitle = (id: number, newTitle: string) => {
-    setUploadedResumes(prev =>
-      prev.map(r => r.id === id ? { ...r, title: newTitle, editing: false } : r)
+  const updateResumeTitle = (id: number) => {
+    setUploadedResumes((prev) =>
+      prev.map((r) =>
+        r.id === id ? { ...r, title: editingTitle, editing: false } : r
+      )
     );
   };
 
@@ -93,8 +97,9 @@ export default function Dashboard() {
           <span className="text-xl font-bold text-black">SOLAR</span>
         </Link>
         <div className="text-center">
-          <h1 className="text-xl font-bold"> Welcome to the Dashboard, {userName}</h1>
-        
+          <h1 className="text-xl font-bold">
+            Welcome to the Dashboard, {userName}
+          </h1>
         </div>
         <button
           onClick={handleLogout}
@@ -112,24 +117,22 @@ export default function Dashboard() {
             <Card key={resume.id} className="p-4 flex flex-col justify-between background: bg-white">
               {resume.editing ? (
                 <input
-                  value={resume.title}
-                  onChange={(e) => updateResumeTitle(resume.id, e.target.value)}
-                  onBlur={() => toggleEditing(resume.id)}
+                  value={editingTitle}
+                  onChange={(e) => setEditingTitle(e.target.value)}
+                  onBlur={() => updateResumeTitle(resume.id)}
                   className="text-center text-lg font-semibold border border-gray-300 px-2 py-1 rounded w-full"
                   autoFocus
                 />
               ) : (
                 <div
-  className="flex items-center justify-center gap-2 cursor-pointer group"
-  onClick={() => toggleEditing(resume.id)}
-  title="Click to edit title"
->
-  <h3 className="font-semibold text-lg text-center ">
-    {resume.title}
-  </h3>
-  
-</div>
-
+                  className="flex items-center justify-center gap-2 cursor-pointer group"
+                  onClick={() => toggleEditing(resume.id, resume.title)}
+                  title="Click to edit title"
+                >
+                  <h3 className="font-semibold text-lg text-center">
+                    {resume.title}
+                  </h3>
+                </div>
               )}
 
               <p className="text-sm text-center text-gray-500 mb-2">{resume.fileName}</p>
@@ -163,7 +166,7 @@ export default function Dashboard() {
               )}
             </Card>
           ))}
-        </div>
+        </div>s
       </div>
     </div>
   );
