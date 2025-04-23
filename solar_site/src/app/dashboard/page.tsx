@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import AddItem from "@/app/components/AddItem";
+import Link from "next/link";
 
 type Resume = {
   id: number;
@@ -68,11 +69,17 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-200 to-pink-200">
       <header className="w-full bg-white shadow flex items-center justify-between px-8 py-4">
-        <div className="flex items-center gap-2">
+        
+        {/* Left: Logo and Brand name with Link */}
+        <Link href="/" className="flex items-center gap-2">
           <img src="/cartoon.webp" alt="Logo" className="h-8 w-8" />
-          <span className="text-xl font-bold text-black">SOLAR</span>
-        </div>
+          <span className="text-xl font-bold text-black ">SOLAR</span>
+        </Link>
+  
+        {/* Center: Title */}
         <h1 className="text-xl font-bold">Your Dashboard</h1>
+  
+        {/* Right: Logout Button */}
         <button
           onClick={handleLogout}
           className="text-sm bg-yellow-500 text-white px-4 py-2 rounded hover:bg-red-600"
