@@ -4,16 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import AddItem from "@/app/components/AddItem";
-import Card from "@/app/components/Card";
 import Link from "next/link";
 
 type Resume = {
-  id: number;
+  _id: string; // Changed id to _id to match MongoDB
   title: string;
   fileName: string;
+  content: string;
   role: string;
   feedback?: string;
-  editing?: boolean;
 };
 
 export default function Dashboard() {
@@ -21,34 +20,70 @@ export default function Dashboard() {
   const router = useRouter();
 
   const [uploadedResumes, setUploadedResumes] = useState<Resume[]>([]);
-  const [editingTitle, setEditingTitle] = useState("");
-  const [loadingId, setLoadingId] = useState<number | null>(null);
-
-  const userName = session?.user?.name || session?.user?.email?.split("@")[0];
+  const [loadingId, setLoadingId] = useState<string | null>(null); // Changed to string
+  const [editingId, setEditingId] = useState<string | null>(null); // State to track which resume is being edited
+  const [newTitle, setNewTitle] = useState("");
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/signin");
+    } else if (status === "authenticated") {
+        // Fetch resumes from the database
+        fetchResumes();
     }
   }, [status, router]);
 
-  const handleResumeUpload = (title: string, file: File, role: string) => {
-    const id = Date.now();
-    const newResume: Resume = {
-      id,
-      title,
-      fileName: file.name,
-      role,
-    };
-    setUploadedResumes((prev) => [...prev, newResume]);
+  const fetchResumes = async () => {
+      try {
+          const res = await fetch('/api/resume'); //Route is /api/resume as discussed earlier.
+          if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+          const data = await res.json();
+          setUploadedResumes(data);
+      } catch (error) {
+          console.error("Error fetching resumes:", error);
+      }
   };
 
-  const handleDeleteResume = (id: number) => {
-    setUploadedResumes((prev) => prev.filter((r) => r.id !== id));
-  };
+    const handleResumeUpload = async (title: string, file: File, content: string, role: string) => {
+        try {
+            const res = await fetch('/api/resume', { // Changed route to api/resume as discussed
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: session?.user?.id,
+                    title: title,
+                    fileName: file.name,
+                    content: content,
+                    role: role
+                })
+            });
+
+            if (!res.ok) {
+                // Try to parse the error message from the response
+                let errorMessage = `Resume upload failed with status: ${res.status}`;
+                try {
+                    const errorData = await res.json();
+                    errorMessage = errorData.message || errorMessage; // Use the message from JSON if available
+                } catch (parseError) {
+                    // If JSON parsing fails, keep the original error message
+                    console.error("Failed to parse error JSON", parseError);
+                }
+                throw new Error(errorMessage);
+            }
+
+            fetchResumes(); // Refresh the resume list
+
+        } catch (error: any) { // Ensure 'error' is typed as 'any' or 'Error'
+            console.error("Error uploading resume:", error);
+        }
+    };
 
   const handleGetFeedback = async (resume: Resume) => {
-    setLoadingId(resume.id);
+    setLoadingId(resume._id);
 
     const res = await fetch("/api/feedback", {
       method: "POST",
@@ -62,30 +97,60 @@ export default function Dashboard() {
     const data = await res.json();
 
     setUploadedResumes((prev) =>
-      prev.map((r) => (r.id === resume.id ? { ...r, feedback: data.feedback } : r))
+      prev.map((r) => (r._id === resume._id ? { ...r, feedback: data.feedback } : r))
     );
 
     setLoadingId(null);
   };
 
-  const toggleEditing = (id: number, currentTitle: string) => {
-    setEditingTitle(currentTitle);
-    setUploadedResumes((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, editing: true } : r))
-    );
+  const handleUpdateTitle = async (resume: Resume) => {
+      try {
+          const res = await fetch('/api/resume', { // Route changed to api/resume
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  id: resume._id,
+                  title: newTitle // Send the new title
+              })
+          });
+
+          if (res.ok) {
+              setUploadedResumes(prev =>
+                  prev.map(r =>
+                      r._id === resume._id ? { ...r, title: newTitle } : r
+                  )
+              );
+              setEditingId(null); // Clear editing state
+              setNewTitle(""); // Clear input field
+          } else {
+              console.error("Title update failed");
+          }
+      } catch (error) {
+          console.error("Error updating title:", error);
+      }
   };
 
-  const updateResumeTitle = (id: number) => {
-    setUploadedResumes((prev) =>
-      prev.map((r) =>
-        r.id === id ? { ...r, title: editingTitle, editing: false } : r
-      )
-    );
-  };
+    const handleDeleteResume = async (id: string) => {
+        try {
+            const res = await fetch('/api/feedback', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+
+            if (res.ok) {
+                setUploadedResumes(prev => prev.filter(r => r._id !== id));
+            } else {
+                console.error("Resume deletion failed");
+            }
+        } catch (error) {
+            console.error("Error deleting resume:", error);
+        }
+    };
 
   const handleLogout = () => {
     signOut({ callbackUrl: "/signin" });
-  };
+ };
 
   if (status === "loading") return <div>Loading...</div>;
 
@@ -96,11 +161,7 @@ export default function Dashboard() {
           <img src="/cartoon.webp" alt="Logo" className="h-8 w-8" />
           <span className="text-xl font-bold text-black">SOLAR</span>
         </Link>
-        <div className="text-center">
-          <h1 className="text-xl font-bold">
-            Welcome to the Dashboard, {userName}
-          </h1>
-        </div>
+        <h1 className="text-xl font-bold">Your Dashboard</h1>
         <button
           onClick={handleLogout}
           className="text-sm bg-yellow-500 text-white px-4 py-2 rounded hover:bg-red-600"
@@ -114,27 +175,36 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 max-w-6xl w-full">
           {uploadedResumes.map((resume) => (
-            <Card key={resume.id} className="p-4 flex flex-col justify-between background: bg-white">
-              {resume.editing ? (
-                <input
-                  value={editingTitle}
-                  onChange={(e) => setEditingTitle(e.target.value)}
-                  onBlur={() => updateResumeTitle(resume.id)}
-                  className="text-center text-lg font-semibold border border-gray-300 px-2 py-1 rounded w-full"
-                  autoFocus
-                />
+            <div
+              key={resume._id}
+              className="bg-white rounded shadow p-4 flex flex-col justify-between"
+            >
+              {editingId === resume._id ? (
+                  <div>
+                      <input
+                          type="text"
+                          className="w-full p-2 border rounded mb-2"
+                          defaultValue={resume.title}
+                          onChange={(e) => setNewTitle(e.target.value)}
+                      />
+                      <div className="flex justify-end">
+                          <button
+                              onClick={() => handleUpdateTitle(resume)}
+                              className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mr-2"
+                          >
+                              Save
+                          </button>
+                          <button
+                              onClick={() => setEditingId(null)}
+                              className="text-sm bg-gray-300 text-gray-700 px-3 py-1 rounded"
+                          >
+                              Cancel
+                          </button>
+                      </div>
+                  </div>
               ) : (
-                <div
-                  className="flex items-center justify-center gap-2 cursor-pointer group"
-                  onClick={() => toggleEditing(resume.id, resume.title)}
-                  title="Click to edit title"
-                >
-                  <h3 className="font-semibold text-lg text-center">
-                    {resume.title}
-                  </h3>
-                </div>
+                  <h3 className="font-semibold text-lg text-center">{resume.title}</h3>
               )}
-
               <p className="text-sm text-center text-gray-500 mb-2">{resume.fileName}</p>
               <p className="text-xs text-center italic text-gray-400">Role: {resume.role}</p>
 
@@ -142,16 +212,25 @@ export default function Dashboard() {
                 <button
                   onClick={() => handleGetFeedback(resume)}
                   className={`text-sm px-3 py-1 rounded text-white ${
-                    loadingId === resume.id
+                    loadingId === resume._id
                       ? "bg-gray-400 cursor-wait"
                       : "bg-yellow-500 hover:bg-yellow-600"
                   }`}
-                  disabled={loadingId === resume.id}
+                  disabled={loadingId === resume._id}
                 >
-                  {loadingId === resume.id ? "Getting feedback..." : "Get Feedback"}
+                  {loadingId === resume._id ? "Getting feedback..." : "Get Feedback"}
                 </button>
+                  <button
+                      onClick={() => {
+                          setEditingId(resume._id);
+                          setNewTitle(resume.title);
+                      }}
+                      className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  >
+                      Edit Title
+                  </button>
                 <button
-                  onClick={() => handleDeleteResume(resume.id)}
+                  onClick={() => handleDeleteResume(resume._id)}
                   className="text-sm bg-yellow-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
                   Delete
@@ -164,9 +243,9 @@ export default function Dashboard() {
                   <p className="mt-1 whitespace-pre-line">{resume.feedback}</p>
                 </div>
               )}
-            </Card>
+            </div>
           ))}
-        </div>s
+        </div>
       </div>
     </div>
   );

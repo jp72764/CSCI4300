@@ -1,106 +1,97 @@
+// Inside AddItem.tsx
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
-let pdfjsLib: any = null;
-
-if (typeof window !== "undefined") {
-  (async () => {
-        // @ts-ignore
-
-    const pdfjs = await import("pdfjs-dist/build/pdf");
-    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf-worker.js";
-    pdfjsLib = pdfjs;
-  })();
+interface AddItemProps {
+  onUpload: (title: string, file: File, content: string, role: string) => void;
 }
 
-export default function AddItem({
-  onUpload,
-}: {
-  onUpload: (title: string, file: File, role: string) => void;
-}) {
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
+export default function AddItem({ onUpload }: AddItemProps) {
   const [title, setTitle] = useState("");
-  const [role, setRole] = useState("general");
+  const [file, setFile] = useState<File | null>(null);
+  const [role, setRole] = useState("");
 
-  const handleResumeFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = ""; 
-  
-    if (!file) return;
-  
-    const isPDF = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
-    if (!isPDF) {
-      alert("Please upload a valid PDF file.");
-      return;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
     }
-  
-    setResumeFile(file);
   };
-  
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!resumeFile || !title) return;
-    onUpload(title, resumeFile, role);
+      if (!file) {
+          alert("Please select a file");
+          return;
+      }
+      const reader = new FileReader(); // reads the file data to get the content.
+      reader.onload = async (upload) => {
+          const fileContent = upload?.target?.result;
+          onUpload(title, file, fileContent as string, role);  // changed the onUpload to include the fileContent
+      }
+      reader.readAsText(file);
+
+    // Reset form fields after submission
     setTitle("");
-    setResumeFile(null);
-    setRole("general");
+    setFile(null);
+    setRole("");
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-md bg-white rounded shadow p-6 flex flex-col items-center"
-    >
-      <h2 className="text-2xl font-bold mb-4">Upload My Resume</h2>
+    <div className="bg-white rounded shadow p-6 w-full max-w-md">
+      <h2 className="text-lg font-semibold mb-4">Upload Resume</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
 
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="w-full mb-4 px-4 py-2 border border-gray-300 rounded"
-      />
+        <div>
+          <label htmlFor="file" className="block text-sm font-medium text-gray-700">
+            File
+          </label>
+          <input
+            type="file"
+            id="file"
+            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+            onChange={handleFileChange}
+            required
+          />
+        </div>
 
-      <label
-        htmlFor="file-upload"
-        className="w-full mb-4 border border-dashed border-gray-300 rounded p-2 text-center cursor-pointer text-gray-500 hover:bg-gray-50"
-      >
-        {resumeFile ? resumeFile.name : "Choose PDF File"}
-      </label>
-      <input
-        id="file-upload"
-        type="file"
-        accept="application/pdf"
-        onChange={handleResumeFileChange}
-        className="hidden"
-      />
+        <div>
+          <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+            Role
+          </label>
+          <input
+            type="text"
+            id="role"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            required
+          />
+        </div>
 
-      <label className="text-sm mb-1 text-left w-full">Select Resume Role Type:</label>
-      <select
-        value={role}
-        onChange={(e) => setRole(e.target.value)}
-        className="w-full mb-4 p-2 border border-gray-300 rounded"
-      >
-        <option value="general">General</option>
-        <option value="frontend developer">Frontend Developer</option>
-        <option value="data scientist">Data Scientist</option>
-        <option value="software engineer">Software Engineer</option>
-        <option value="hardware engineer">Hardware Engineer</option>
-      </select>
-
-      <button
-        type="submit"
-        disabled={!resumeFile || !title}
-        className={`w-full text-white py-2 px-4 rounded ${
-          resumeFile && title
-            ? "bg-blue-500 hover:bg-blue-600"
-            : "bg-gray-300 cursor-not-allowed"
-        }`}
-      >
-        Upload
-      </button>
-    </form>
+        <div>
+          <button
+            type="submit"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Upload
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
