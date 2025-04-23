@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import AddItem from "@/app/components/AddItem";
+import Card from "@/app/components/Card";
 import Link from "next/link";
 
 type Resume = {
@@ -12,6 +13,7 @@ type Resume = {
   fileName: string;
   role: string;
   feedback?: string;
+  editing?: boolean;
 };
 
 export default function Dashboard() {
@@ -20,6 +22,8 @@ export default function Dashboard() {
 
   const [uploadedResumes, setUploadedResumes] = useState<Resume[]>([]);
   const [loadingId, setLoadingId] = useState<number | null>(null);
+
+  const userName = session?.user?.name || session?.user?.email?.split("@")[0];
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -63,6 +67,18 @@ export default function Dashboard() {
     setLoadingId(null);
   };
 
+  const toggleEditing = (id: number) => {
+    setUploadedResumes(prev =>
+      prev.map(r => r.id === id ? { ...r, editing: !r.editing } : r)
+    );
+  };
+
+  const updateResumeTitle = (id: number, newTitle: string) => {
+    setUploadedResumes(prev =>
+      prev.map(r => r.id === id ? { ...r, title: newTitle, editing: false } : r)
+    );
+  };
+
   const handleLogout = () => {
     signOut({ callbackUrl: "/signin" });
   };
@@ -76,7 +92,10 @@ export default function Dashboard() {
           <img src="/cartoon.webp" alt="Logo" className="h-8 w-8" />
           <span className="text-xl font-bold text-black">SOLAR</span>
         </Link>
-        <h1 className="text-xl font-bold">Your Dashboard</h1>
+        <div className="text-center">
+          <h1 className="text-xl font-bold"> Welcome to the Dashboard, {userName}</h1>
+        
+        </div>
         <button
           onClick={handleLogout}
           className="text-sm bg-yellow-500 text-white px-4 py-2 rounded hover:bg-red-600"
@@ -90,11 +109,29 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 max-w-6xl w-full">
           {uploadedResumes.map((resume) => (
-            <div
-              key={resume.id}
-              className="bg-white rounded shadow p-4 flex flex-col justify-between"
-            >
-              <h3 className="font-semibold text-lg text-center">{resume.title}</h3>
+            <Card key={resume.id} className="p-4 flex flex-col justify-between background: bg-white">
+              {resume.editing ? (
+                <input
+                  value={resume.title}
+                  onChange={(e) => updateResumeTitle(resume.id, e.target.value)}
+                  onBlur={() => toggleEditing(resume.id)}
+                  className="text-center text-lg font-semibold border border-gray-300 px-2 py-1 rounded w-full"
+                  autoFocus
+                />
+              ) : (
+                <div
+  className="flex items-center justify-center gap-2 cursor-pointer group"
+  onClick={() => toggleEditing(resume.id)}
+  title="Click to edit title"
+>
+  <h3 className="font-semibold text-lg text-center ">
+    {resume.title}
+  </h3>
+  
+</div>
+
+              )}
+
               <p className="text-sm text-center text-gray-500 mb-2">{resume.fileName}</p>
               <p className="text-xs text-center italic text-gray-400">Role: {resume.role}</p>
 
@@ -124,7 +161,7 @@ export default function Dashboard() {
                   <p className="mt-1 whitespace-pre-line">{resume.feedback}</p>
                 </div>
               )}
-            </div>
+            </Card>
           ))}
         </div>
       </div>

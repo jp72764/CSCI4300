@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { signOut } from '@/auth'; // Import signOut
-// Remember to create this component in your main components folder.
+import { signOut } from '@/auth'; 
+
 export default function LogoutButton() {
     const router = useRouter();
     
     const handleLogout = async () => {
-        await signOut({ redirect: true, redirectTo: '/' }); // Redirect to home page after logout
+        await signOut({ redirect: true, redirectTo: '/' }); 
     };
 
     return (
