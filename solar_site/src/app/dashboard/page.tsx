@@ -17,7 +17,9 @@ type Resume = {
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
+
   const [uploadedResumes, setUploadedResumes] = useState<Resume[]>([]);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -41,6 +43,8 @@ export default function Dashboard() {
   };
 
   const handleGetFeedback = async (resume: Resume) => {
+    setLoadingId(resume.id);
+
     const res = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -55,6 +59,8 @@ export default function Dashboard() {
     setUploadedResumes((prev) =>
       prev.map((r) => (r.id === resume.id ? { ...r, feedback: data.feedback } : r))
     );
+
+    setLoadingId(null);
   };
 
   const handleLogout = () => {
@@ -95,9 +101,14 @@ export default function Dashboard() {
               <div className="flex justify-between mt-4">
                 <button
                   onClick={() => handleGetFeedback(resume)}
-                  className="text-sm bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                  className={`text-sm px-3 py-1 rounded text-white ${
+                    loadingId === resume.id
+                      ? "bg-gray-400 cursor-wait"
+                      : "bg-yellow-500 hover:bg-yellow-600"
+                  }`}
+                  disabled={loadingId === resume.id}
                 >
-                  Get Feedback
+                  {loadingId === resume.id ? "Getting feedback..." : "Get Feedback"}
                 </button>
                 <button
                   onClick={() => handleDeleteResume(resume.id)}

@@ -1,34 +1,43 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 
 export default function Signin() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
 
-      if (result?.error) {
-        setError("Invalid email or password");
-        return;
-      }
-
-      window.location.href = "/dashboard";
-    } catch (error) {
-      setError("An unexpected error occurred. Please try again.");
+    if (result?.error) {
+      setError("Invalid email or password");
+    } else {
+      router.push("/dashboard");
     }
   };
+
+  if (status === "loading") return null; // wait for session status
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-yellow-200 via-orange-200 to-pink-400 text-black">
@@ -42,7 +51,7 @@ export default function Signin() {
         <div className="w-full max-w-md p-8 bg-white rounded-lg shadow">
           <h1 className="text-4xl font-bold mb-8 text-center">Sign In</h1>
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex flex-col">
               <label className="mb-1 font-medium">Email</label>
@@ -75,7 +84,7 @@ export default function Signin() {
           </form>
 
           <p className="text-center text-sm mt-4">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/Signup" className="font-semibold underline hover:text-blue-600">
               Sign Up
             </Link>

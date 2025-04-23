@@ -1,12 +1,13 @@
 'use client';
 
+import { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React from "react";
 import Button from ".//components/Button";
 import Image from "next/image";
 import Link from "next/link";
 import connectMongoDB from "../../config/mongodb";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 type Item = {
   id: number;
@@ -15,6 +16,15 @@ type Item = {
 };
 
 export default function LandingPage() {
+  const { status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      signOut({ callbackUrl: "/" });
+    }
+  }, [status]);
+
   connectMongoDB();
 
   const [items, setItems] = useState<Item[]>([
@@ -23,9 +33,10 @@ export default function LandingPage() {
     { id: 3, title: "Sample Resume 3", image: "/resumes/sample3.png" },
   ]);
 
+
   const [newTitle, setNewTitle] = useState("");
   const [newImage, setNewImage] = useState("");
-  const router = useRouter();
+  
 
   return (
     <div className="min-h-screen w-full flex flex-col text-gray-800">

@@ -25,17 +25,19 @@ export default function AddItem({
 
   const handleResumeFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = ""; // ✅ Reset file input so selecting the same file triggers change again
+  
     if (!file) return;
-
-    const isPDF =
-      file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  
+    const isPDF = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
     if (!isPDF) {
       alert("Please upload a valid PDF file.");
       return;
     }
-
+  
     setResumeFile(file);
   };
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
