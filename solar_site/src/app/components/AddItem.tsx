@@ -14,7 +14,11 @@ if (typeof window !== "undefined") {
   })();
 }
 
-export default function AddItem({ onUpload }: { onUpload: (title: string, file: File, role: string) => void }) {
+export default function AddItem({
+  onUpload,
+}: {
+  onUpload: (title: string, file: File, role: string) => void;
+}) {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [role, setRole] = useState("general");
@@ -23,7 +27,8 @@ export default function AddItem({ onUpload }: { onUpload: (title: string, file: 
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const isPDF = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+    const isPDF =
+      file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
     if (!isPDF) {
       alert("Please upload a valid PDF file.");
       return;
@@ -46,7 +51,7 @@ export default function AddItem({ onUpload }: { onUpload: (title: string, file: 
       onSubmit={handleSubmit}
       className="w-full max-w-md bg-white rounded shadow p-6 flex flex-col items-center"
     >
-      <h2 className="text-2xl font-bold mb-4">Upload My Resume </h2>
+      <h2 className="text-2xl font-bold mb-4">Upload My Resume</h2>
 
       <input
         type="text"
@@ -87,7 +92,9 @@ export default function AddItem({ onUpload }: { onUpload: (title: string, file: 
         type="submit"
         disabled={!resumeFile || !title}
         className={`w-full text-white py-2 px-4 rounded ${
-          resumeFile && title ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-300 cursor-not-allowed"
+          resumeFile && title
+            ? "bg-blue-500 hover:bg-blue-600"
+            : "bg-gray-300 cursor-not-allowed"
         }`}
       >
         Upload

@@ -17,7 +17,6 @@ type Resume = {
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-
   const [uploadedResumes, setUploadedResumes] = useState<Resume[]>([]);
 
   useEffect(() => {
@@ -42,22 +41,20 @@ export default function Dashboard() {
   };
 
   const handleGetFeedback = async (resume: Resume) => {
-    try {
-      const res = await fetch("/api/feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: resume.title,
-          role: resume.role,
-        }),
-      });
-      const data = await res.json();
-      setUploadedResumes((prev) =>
-        prev.map((r) => (r.id === resume.id ? { ...r, feedback: data.feedback } : r))
-      );
-    } catch (err) {
-      alert("❌ Failed to get feedback.");
-    }
+    const res = await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: resume.title,
+        role: resume.role,
+      }),
+    });
+
+    const data = await res.json();
+
+    setUploadedResumes((prev) =>
+      prev.map((r) => (r.id === resume.id ? { ...r, feedback: data.feedback } : r))
+    );
   };
 
   const handleLogout = () => {
@@ -69,17 +66,11 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-200 to-pink-200">
       <header className="w-full bg-white shadow flex items-center justify-between px-8 py-4">
-        
-        {/* Left: Logo and Brand name with Link */}
         <Link href="/" className="flex items-center gap-2">
           <img src="/cartoon.webp" alt="Logo" className="h-8 w-8" />
-          <span className="text-xl font-bold text-black ">SOLAR</span>
+          <span className="text-xl font-bold text-black">SOLAR</span>
         </Link>
-  
-        {/* Center: Title */}
         <h1 className="text-xl font-bold">Your Dashboard</h1>
-  
-        {/* Right: Logout Button */}
         <button
           onClick={handleLogout}
           className="text-sm bg-yellow-500 text-white px-4 py-2 rounded hover:bg-red-600"
